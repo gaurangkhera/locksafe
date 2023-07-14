@@ -1,5 +1,6 @@
 alembic==1.10.2
 stripe
+nfcpy
 async-generator==1.10
 attrs==23.1.0
 bidict==0.22.1
