@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="bg-white py-6 sm:py-8 lg:py-12">
+  <div class="mx-auto max-w-screen-2xl px-4 md:px-8">
+    <div class="flex flex-col items-center">
+
+      <p class="mb-4 text-sm font-semibold uppercase text-green-500 md:text-base">success.</p>
+      <h1 class="mb-2 text-center text-2xl font-bold text-gray-800 md:text-3xl">locker purchased successfully.</h1>
+
+      <p class="mb-12 max-w-screen-md text-center text-gray-500 md:text-lg">Your access key is <span class="text-bold" id="access_key">**********</span></p>
+
+      <div class="relative inline-block">
+        <button id="copy_button" class="inline-block rounded-lg bg-gray-200 px-8 py-3 text-center text-sm font-semibold text-gray-500 outline-none ring-indigo-300 transition duration-100 hover:bg-gray-300 focus-visible:ring active:text-gray-700 md:text-base">Copy</button>
+        <span id="copy_message" class="hidden absolute top-0 right-0 mt-2 mr-2 px-2 py-1 text-xs text-white bg-gray-900 rounded">Copied!</span>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<script>
+  const accessKeyElement = document.getElementById('access_key');
+  const copyButton = document.getElementById('copy_button');
+  const copyMessage = document.getElementById('copy_message');
+  
+  copyButton.addEventListener('click', () => {
+    // Create a temporary textarea to hold the text to be copied
+    const tempTextArea = document.createElement('textarea');
+    tempTextArea.value = '{{locker.access_key}}'
+  
+    // Append the textarea to the body
+    document.body.appendChild(tempTextArea);
+  
+    // Select the text within the textarea
+    tempTextArea.select();
+    tempTextArea.setSelectionRange(0, 99999); // For mobile devices
+  
+    // Copy the text to the clipboard
+    document.execCommand('copy');
+  
+    // Remove the temporary textarea
+    document.body.removeChild(tempTextArea);
+  
+    // Show the "Copied!" message for 2 seconds
+    copyMessage.classList.remove('hidden');
+    setTimeout(() => {
+      copyMessage.classList.add('hidden');
+    }, 2000);
+  });
+</script>
+{% endblock content %}

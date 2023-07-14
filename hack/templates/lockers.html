@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="bg-white py-6 sm:py-8 lg:py-12">
+    <div class="mx-auto max-w-screen-2xl px-4 md:px-8">
+        <h2 class="mb-8 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl">purchase lockers</h2>
+
+        <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-3">
+            {% for l in lockers %}
+            <div class="bg-gray-100 p-4 rounded-lg">
+                <h3 class="text-gray-800 text-lg font-semibold mb-2">{{ l.locker_name }}</h3>
+                <p class="text-gray-500 mb-4">Price: Rs. {{ l.price }}</p>
+                {% if l.is_available == 1 %}
+                <button
+                class="border-2 border-white bg-black text-white hover:border-black rounded-full hover:bg-white hover:text-black transition-all 2s font-bold px-8 py-2 mr-4 ml-36 buy_now_btn" data-locker-id="{{l.id}}">Purchase</button>
+                {% else %}
+                <button
+                    class="border-2 border-white bg-gray-600 text-white rounded-full transition-all 2s cursor-not-allowed font-bold px-8 py-2 mr-4 ml-36 buy_now_btn" data-locker-id="{{l.id}}" disabled>Purchase</button>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    console.log('scrip tlaoded')
+    document.addEventListener('DOMContentLoaded', function () {
+        let buttons = document.querySelectorAll('.buy_now_btn');
+        buttons.forEach(function (button) {
+            console.log('im a btn!')
+            button.addEventListener('click', function () {
+                let lockerId = this.dataset.lockerId;
+                console.log(lockerId)
+                fetch(`/stripe_pay/${lockerId}`)
+                    .then((result) => result.json())
+                    .then((data) => {
+                        var stripe = Stripe(data.checkout_public_key);
+                        stripe.redirectToCheckout({
+                            sessionId: data.checkout_session_id
+                        }).then(function (result) {
+                            console.log(result)
+                        });
+                    });
+            });
+        });
+    });
+</script>
+
+
+{% endblock content %}

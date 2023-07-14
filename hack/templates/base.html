@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500;600;700;800;900;1000&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>locksafe</title>
+</head>
+
+<style>
+  *{
+    font-family: 'Nunito' !important;
+  }
+</style>
+
+<body>
+  <header class="bg-white bg-opacity-5 text-black shadow-lg hidden md:block">
+    <div class="container mx-auto flex items-center h-24">
+      <a href="/" class="font-black text-lg flex items-center justify-center ml-4">
+        locksafe.io
+      </a>
+      <nav class="contents font-semibold text-base lg:text-lg">
+        <ul class="mx-auto flex items-center">
+          <li class="p-5 xl:p-8 active">
+            <a href="/">
+              <span>home</span>
+            </a>
+          </li>
+          <li class="p-5 xl:p-8">
+            <a href="/lockers">
+              <span>lockers</span>
+            </a>
+          </li>
+          <li class="p-5 xl:p-8">
+            <a href="">
+              <span>projects</span>
+            </a>
+          </li>
+          <li class="p-5 xl:p-8">
+            <a href="">
+              <span>services</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      {% if not current_user.is_authenticated %}
+      <a href="/login" class="border-2 border-black rounded-full hover:bg-black hover:text-white transition-all 2s font-bold px-8 py-2 mr-4">sign in</a>
+      <a href="/reg" class="border-2 border-white bg-black text-white hover:border-black rounded-full hover:bg-white hover:text-black transition-all 2s font-bold px-8 py-2 mr-4">sign up</a>
+      {% else %}
+      <a href="/dashboard" class="border-2 border-white bg-black text-white hover:border-black rounded-full hover:bg-white hover:text-black transition-all 2s font-bold px-8 py-2 mr-4">dashboard</a>
+
+      <a href="/logout" class="border-2 border-black rounded-full hover:bg-black hover:text-white transition-all 2s font-bold px-8 py-2 mr-4">sign out</a>
+      {% endif %}
+    </div>
+  </header>
+  {% block content %}
+    
+  {% endblock content %}
+
+</body>
+
+</html>
