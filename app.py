@@ -19,6 +19,7 @@ def home():
 
 # AJAX route for Stripe payments
 @app.route('/stripe_pay/<locker_id>')
+@login_required
 def stripe_pay(locker_id):
     session = stripe.checkout.Session.create(
         payment_method_types=['card'],
@@ -27,11 +28,12 @@ def stripe_pay(locker_id):
             'quantity': 1,
         }],
         mode='payment',
-        success_url=url_for('thanks', _external=True, locker_id=locker_id) + '?session_id={CHECKOUT_SESSION_ID}',
+        success_url=url_for('thanks', _external=True,
+                            locker_id=locker_id) + '?session_id={CHECKOUT_SESSION_ID}',
         cancel_url=url_for('show_lockers', _external=True),
     )
     return {
-        'checkout_session_id': session['id'], 
+        'checkout_session_id': session['id'],
         'checkout_public_key': app.config['STRIPE_PUBLIC_KEY']
     }
 
@@ -51,12 +53,14 @@ def thanks(locker_id):
     locker = Locker.query.filter_by(id=locker_id).first()
     locker.lock_locker(current_user.id)
     return render_template('thanks.html', locker=locker)
-    
+
+
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
     form = UnlockLockerForm()
     return render_template('dashboard.html', form=form)
+
 
 @app.route('/unlock_locker/<locker_id>')
 @login_required
@@ -66,6 +70,7 @@ def unlock_locker(locker_id):
     print(request.args.get('key'))
     locker.unlock_locker(request.args.get('key'))
     return redirect(request.referrer)
+
 
 @app.route('/sendunlock/<locker_id>', methods=['GET', 'POST'])
 def send(locker_id):
@@ -78,7 +83,7 @@ def send(locker_id):
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():
     form = RegForm()
-    mess=''
+    mess = ''
     if form.validate_on_submit():
         email = form.email.data
         username = form.username.data
@@ -87,22 +92,25 @@ def reg():
         if user:
             mess = 'Account already exists'
         else:
-            new_user = User(email=email, username=username, password=generate_password_hash(password))
+            new_user = User(email=email, username=username,
+                            password=generate_password_hash(password))
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user)
             return redirect('/')
     return render_template('reg.html', form=form, mess=mess)
 
+
 @app.route('/lockers')
 def show_lockers():
     lockers = Locker.query.all()
     return render_template('lockers.html', lockers=lockers)
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    mess=''
+    mess = ''
     if form.validate_on_submit():
         email = form.email.data
         password = form.password.data
@@ -117,11 +125,13 @@ def login():
                 mess = 'Incorrect password.'
     return render_template('login.html', mess=mess, form=form)
 
+
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('home'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)

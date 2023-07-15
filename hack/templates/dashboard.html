@@ -6,26 +6,31 @@
 
         <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-3">
             {% for l in current_user.lockers %}
-    <!-- Locker item -->
-    <div class="bg-gray-100 p-4 rounded-lg">
-        <h3 class="text-gray-800 text-lg font-semibold mb-2">{{ l.locker_name.lower() }}</h3>
-        <p class="text-gray-500 mb-4">price: rs. {{ l.price }}</p>
-        <button class="border-2 border-white bg-black text-white hover:border-black rounded-full hover:bg-white hover:text-black transition-all 2s font-bold px-8 py-2 mr-4 ml-36 buy_now_btn" data-locker-id="{{l.id}}" onclick="openUnlockPopup('{{l.id}}')">unlock</button>
-    </div>
+            <!-- Locker item -->
+            <div class="bg-gray-100 p-4 rounded-lg">
+                <h3 class="text-gray-800 text-lg font-semibold mb-2">{{ l.locker_name.lower() }}</h3>
+                <p class="text-gray-500 mb-4">price: rs. {{ l.price }}</p>
+                <button
+                    class="border-2 border-white bg-black text-white hover:border-black rounded-full hover:bg-white hover:text-black transition-all 2s font-bold px-8 py-2 mr-4 ml-36 buy_now_btn"
+                    data-locker-id="{{l.id}}" onclick="openUnlockPopup('{{l.id}}')">unlock</button>
+            </div>
 
-    <!-- Unlock Popup -->
-    <div id="unlockPopup{{l.id}}" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-        <div class="bg-white w-96 p-8 rounded-lg">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">unlock locker</h2>
-            <form action="/sendunlock/{{l.id}}" method="post">
-                {{form.csrf_token}}
-                {{form.hidden_tag()}}
-                {{form.access_key(class='border border-gray-300 rounded-lg px-4 py-2 mb-4', placeholder='enter access key')}}
-                <button class="bg-black text-white font-bold py-2 px-4 rounded-full" onclick="unlockLocker('{{l.id}}')">unlock</button>
-            </form>
-        </div>
-    </div>
-{% endfor %}
+            <!-- Unlock Popup -->
+            <div id="unlockPopup{{l.id}}"
+                class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                <div class="bg-white w-96 p-8 rounded-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">unlock locker</h2>
+                    <form action="/sendunlock/{{l.id}}" method="post">
+                        {{form.csrf_token}}
+                        {{form.hidden_tag()}}
+                        {{form.access_key(class='border border-gray-300 rounded-lg px-4 py-2 mb-4', placeholder='enter
+                        access key')}}
+                        <button class="bg-black text-white font-bold py-2 px-4 rounded-full"
+                            onclick="unlockLocker('{{l.id}}')">unlock</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
 
         </div>
     </div>

@@ -7,17 +7,19 @@
       <p class="mb-4 text-sm font-semibold uppercase text-green-500 md:text-base">success.</p>
       <h1 class="mb-2 text-center text-2xl font-bold text-gray-800 md:text-3xl">locker purchased successfully.</h1>
 
-      <p class="mb-12 max-w-screen-md text-center text-gray-500 md:text-lg">your access key is <span class="text-bold blur-sm"
-          id="access_key">{{locker.access_key}}</span></p><div id="copy_message" class="hidden mt-16 fixed top-0 left-0 w-full flex items-center justify-center">
-            <div class="bg-white text-black rounded-lg p-3 shadow-lg flex items-center">
-              <svg class="w-6 h-6 text-green-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-              </svg>
-              <span class="text-sm">copied!</span>
-            </div>
-          </div>
-          
-          
+      <p class="mb-12 max-w-screen-md text-center text-gray-500 md:text-lg">your access key is <span
+          class="text-bold blur-sm" id="access_key">{{locker.access_key}}</span></p>
+      <div id="copy_message" class="hidden mt-16 fixed top-0 left-0 w-full flex items-center justify-center">
+        <div class="bg-white text-black rounded-lg p-3 shadow-lg flex items-center">
+          <svg class="w-6 h-6 text-green-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          <span class="text-sm">copied!</span>
+        </div>
+      </div>
+
+
     </div>
   </div>
 </div>
@@ -28,7 +30,7 @@
   const copyMessage = document.getElementById('copy_message');
 
   accessKeyElement.addEventListener('click', () => {
-    if(accessKeyElement.classList.contains('blur-sm')){
+    if (accessKeyElement.classList.contains('blur-sm')) {
       accessKeyElement.classList.remove('blur-sm');
     }
     // Create a temporary textarea to hold the text to be copied
