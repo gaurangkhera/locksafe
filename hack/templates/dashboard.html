@@ -9,7 +9,7 @@
             <!-- Locker item -->
             <div class="bg-gray-100 p-4 rounded-lg">
                 <h3 class="text-gray-800 text-lg font-semibold mb-2">{{ l.locker_name.lower() }}</h3>
-                <p class="text-gray-500 mb-4">{{ l.price }}</p>
+                <p class="text-gray-500 mb-4">rs. {{ l.price }}</p>
                 <button
                     class="border-2 border-white bg-black text-white hover:border-black rounded-full hover:bg-white hover:text-black transition-all 2s font-bold px-8 py-2 mr-4 ml-36 buy_now_btn"
                     data-locker-id="{{l.id}}" onclick="openUnlockPopup('{{l.id}}')">unlock</button>
@@ -23,8 +23,7 @@
                     <form action="/sendunlock/{{l.id}}" method="post">
                         {{form.csrf_token}}
                         {{form.hidden_tag()}}
-                        {{form.access_key(class='border border-gray-300 rounded-lg px-4 py-2 mb-4', placeholder='enter
-                        access key')}}
+                        {{form.access_key(class='border border-gray-300 rounded-lg px-4 py-2 mb-4', placeholder='enter access key')}}
                         <button class="bg-black text-white font-bold py-2 px-4 rounded-full"
                             onclick="unlockLocker('{{l.id}}')">unlock</button>
                     </form>
