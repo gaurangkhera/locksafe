@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="bg-white py-6 sm:py-8 lg:py-12">
+    <div class="mx-auto max-w-screen-2xl px-4 md:px-8">
+        <h2 class="mb-8 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl">your lockers</h2>
+
+        <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-3">
+            {% for l in current_user.lockers %}
+    <!-- Locker item -->
+    <div class="bg-gray-100 p-4 rounded-lg">
+        <h3 class="text-gray-800 text-lg font-semibold mb-2">{{ l.locker_name.lower() }}</h3>
+        <p class="text-gray-500 mb-4">price: rs. {{ l.price }}</p>
+        <button class="border-2 border-white bg-black text-white hover:border-black rounded-full hover:bg-white hover:text-black transition-all 2s font-bold px-8 py-2 mr-4 ml-36 buy_now_btn" data-locker-id="{{l.id}}" onclick="openUnlockPopup('{{l.id}}')">unlock</button>
+    </div>
+
+    <!-- Unlock Popup -->
+    <div id="unlockPopup{{l.id}}" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-white w-96 p-8 rounded-lg">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">unlock locker</h2>
+            <form action="/sendunlock/{{l.id}}" method="post">
+                {{form.csrf_token}}
+                {{form.hidden_tag()}}
+                {{form.access_key(class='border border-gray-300 rounded-lg px-4 py-2 mb-4', placeholder='enter access key')}}
+                <button class="bg-black text-white font-bold py-2 px-4 rounded-full" onclick="unlockLocker('{{l.id}}')">unlock</button>
+            </form>
+        </div>
+    </div>
+{% endfor %}
+
+        </div>
+    </div>
+</div>
+<script>
+    function openUnlockPopup(lockerId) {
+        // Show the unlock popup for the corresponding locker
+        document.getElementById('unlockPopup' + lockerId).classList.remove('hidden');
+    }
+
+    function unlockLocker(lockerId) {
+        // Get the unlock code from the input field
+        var unlockCode = document.getElementById('unlockCodeInput' + lockerId).value;
+
+        // Perform the unlock logic here for the corresponding locker
+
+        // Close the unlock popup for the corresponding locker
+        document.getElementById('unlockPopup' + lockerId).classList.add('hidden');
+    }
+</script>
+
+{% endblock content %}

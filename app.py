@@ -1,7 +1,7 @@
 from hack import app, create_db, db
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, request, abort
 from flask_login import current_user, login_user, logout_user, login_required
-from hack.forms import LoginForm, RegForm
+from hack.forms import LoginForm, RegForm, UnlockLockerForm
 from hack.models import User, Locker
 from werkzeug.security import generate_password_hash, check_password_hash
 import stripe
@@ -28,7 +28,7 @@ def stripe_pay(locker_id):
         }],
         mode='payment',
         success_url=url_for('thanks', _external=True, locker_id=locker_id) + '?session_id={CHECKOUT_SESSION_ID}',
-        cancel_url=url_for('home', _external=True),
+        cancel_url=url_for('show_lockers', _external=True),
     )
     return {
         'checkout_session_id': session['id'], 
@@ -38,9 +38,42 @@ def stripe_pay(locker_id):
 
 @app.route('/thanks/<locker_id>')
 def thanks(locker_id):
+    session_id = request.args.get('session_id')
+    if not session_id:
+        abort(403)  # Return a 403 Forbidden error if there is no session ID present
+    # Verify if the payment session id is valid
+    session = stripe.checkout.Session.retrieve(session_id)
+    print(session.get('payment_status'))
+    if session.get('payment_status') != 'paid':
+        abort(403)
+
+    # then lock the locker and provide access key to payer
     locker = Locker.query.filter_by(id=locker_id).first()
     locker.lock_locker(current_user.id)
     return render_template('thanks.html', locker=locker)
+    
+@app.route('/dashboard', methods=['GET', 'POST'])
+@login_required
+def dashboard():
+    form = UnlockLockerForm()
+    return render_template('dashboard.html', form=form)
+
+@app.route('/unlock_locker/<locker_id>')
+@login_required
+def unlock_locker(locker_id):
+    locker = Locker.query.filter_by(id=locker_id).first()
+    print(locker.locker_name)
+    print(request.args.get('key'))
+    locker.unlock_locker(request.args.get('key'))
+    return redirect(request.referrer)
+
+@app.route('/sendunlock/<locker_id>', methods=['GET', 'POST'])
+def send(locker_id):
+    form = UnlockLockerForm()
+    if form.validate_on_submit():
+        return redirect(url_for('unlock_locker', locker_id=locker_id, key=form.access_key.data))
+    return None
+
 
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():

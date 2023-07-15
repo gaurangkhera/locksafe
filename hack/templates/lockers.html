@@ -7,14 +7,16 @@
         <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-3">
             {% for l in lockers %}
             <div class="bg-gray-100 p-4 rounded-lg">
-                <h3 class="text-gray-800 text-lg font-semibold mb-2">{{ l.locker_name }}</h3>
-                <p class="text-gray-500 mb-4">Price: Rs. {{ l.price }}</p>
+                <h3 class="text-gray-800 text-lg font-semibold mb-2">{{ l.locker_name.lower() }}</h3>
+                <p class="text-gray-500 mb-4">price: rs. {{ l.price }}</p>
                 {% if l.is_available == 1 %}
                 <button
-                class="border-2 border-white bg-black text-white hover:border-black rounded-full hover:bg-white hover:text-black transition-all 2s font-bold px-8 py-2 mr-4 ml-36 buy_now_btn" data-locker-id="{{l.id}}">Purchase</button>
+                    class="border-2 border-white bg-black text-white hover:border-black rounded-full hover:bg-white hover:text-black transition-all 2s font-bold px-8 py-2 mr-4 ml-36 buy_now_btn"
+                    data-locker-id="{{l.id}}">purchase</button>
                 {% else %}
                 <button
-                    class="border-2 border-white bg-gray-600 text-white rounded-full transition-all 2s cursor-not-allowed font-bold px-8 py-2 mr-4 ml-36 buy_now_btn" data-locker-id="{{l.id}}" disabled>Purchase</button>
+                    class="border-2 border-white bg-gray-600 text-white rounded-full transition-all 2s cursor-not-allowed font-bold px-8 py-2 mr-4 ml-36 buy_now_btn"
+                    data-locker-id="{{l.id}}" disabled>purchase</button>
                 {% endif %}
             </div>
             {% endfor %}
