@@ -2,51 +2,70 @@
 {% block content %}
 <div class="bg-white py-6 sm:py-8 lg:py-12">
     <div class="mx-auto max-w-screen-2xl px-4 md:px-8">
-        <h2 class="mb-8 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl">purchase lockers</h2>
+        <h2 class="mb-8 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl">Purchase Lockers</h2>
 
         <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-3">
             {% for l in lockers %}
             <div class="bg-gray-100 p-4 rounded-lg">
                 <h3 class="text-gray-800 text-lg font-semibold mb-2">{{ l.locker_name.lower() }}</h3>
-                <p class="text-gray-500 mb-4">price: rs. {{ l.price }}</p>
+                <p class="text-gray-500 mb-4">rs. {{ l.price }}</p>
                 {% if l.is_available == 1 %}
                 <button
                     class="border-2 border-white bg-black text-white hover:border-black rounded-full hover:bg-white hover:text-black transition-all 2s font-bold px-8 py-2 mr-4 ml-36 buy_now_btn"
-                    data-locker-id="{{l.id}}">purchase</button>
+                    data-locker-id="{{ l.id }}">Purchase</button>
                 {% else %}
                 <button
                     class="border-2 border-white bg-gray-600 text-white rounded-full transition-all 2s cursor-not-allowed font-bold px-8 py-2 mr-4 ml-36 buy_now_btn"
-                    data-locker-id="{{l.id}}" disabled>purchase</button>
+                    data-locker-id="{{ l.id }}" disabled>Purchase</button>
                 {% endif %}
             </div>
             {% endfor %}
         </div>
     </div>
 </div>
+<div id="copy_message" class="hidden mt-16 fixed top-0 left-0 w-full flex items-center justify-center">
+    <div class="bg-white text-black rounded-lg p-3 shadow-lg flex items-center">
+        <svg class="w-6 h-6 text-red-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+        <span class="text-sm">You must be logged in to do that.</span>
+    </div>
+</div>
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    console.log('scrip tlaoded')
+    console.log('script loaded');
+    let copyMessage = document.querySelector('#copy_message');
+    let checkLogin = "{{ current_user.is_authenticated }}";
+
     document.addEventListener('DOMContentLoaded', function () {
         let buttons = document.querySelectorAll('.buy_now_btn');
         buttons.forEach(function (button) {
-            console.log('im a btn!')
+            console.log('I am a button!');
             button.addEventListener('click', function () {
                 let lockerId = this.dataset.lockerId;
-                console.log(lockerId)
-                fetch(`/stripe_pay/${lockerId}`)
-                    .then((result) => result.json())
-                    .then((data) => {
-                        var stripe = Stripe(data.checkout_public_key);
-                        stripe.redirectToCheckout({
-                            sessionId: data.checkout_session_id
-                        }).then(function (result) {
-                            console.log(result)
+                console.log(lockerId);
+                if (checkLogin === 'False') {
+                    copyMessage.classList.remove('hidden');
+                    copyMessage.classList.add('animate-shake');
+                    setTimeout(() => {
+                        copyMessage.classList.add('hidden');
+                        copyMessage.classList.remove('animate-shake');
+                    }, 2000);
+                } else {
+                    fetch(`/stripe_pay/${lockerId}`)
+                        .then((result) => result.json())
+                        .then((data) => {
+                            var stripe = Stripe(data.checkout_public_key);
+                            stripe.redirectToCheckout({
+                                sessionId: data.checkout_session_id
+                            }).then(function (result) {
+                                console.log(result);
+                            });
                         });
-                    });
+                }
             });
         });
     });
 </script>
-
-
 {% endblock content %}

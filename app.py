@@ -16,10 +16,13 @@ create_db(app)
 def home():
     return render_template('index.html')
 
+@app.route('/faq')
+def faq():
+    return render_template('faq.html')
+
 
 # AJAX route for Stripe payments
 @app.route('/stripe_pay/<locker_id>')
-@login_required
 def stripe_pay(locker_id):
     session = stripe.checkout.Session.create(
         payment_method_types=['card'],
